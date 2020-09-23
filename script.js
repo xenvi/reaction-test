@@ -34,18 +34,22 @@ let styles = `
         width: 100vw;
         height: 100vh;
         display: none;
+        flex-direction: column;
         justify-content: center;
         align-items: center;
-        background: #000;
+        background: #4f9cd6;
         color: #fff;
         font-family:"Helvetica Neue",Helvetica,"Lucida Grande","Lucida Sans Unicode",Arial,Verdana,sans-serif;
+    }
+    .tfny-gameText {
+        color: #fff;
     }
     .tfny-circle {
         width: 200px;
         height: 200px;
         border-radius: 50%;
         background: #f20c0c;
-        box-shadow: 0 2rem rgba(0, 0, 0, 0.3);
+        box-shadow: 0 2rem 1rem rgba(0, 0, 0, 0.3);
     }
 `
 
@@ -78,6 +82,11 @@ function startReactionTest(canvas) {
     let gamePage = document.createElement("section");
     gamePage.classList.add("tfny-gameWrapper");
 
+        // create text
+        let gameText = document.createElement('h2');
+        gameText.classList.add("tfny-gameText");
+        gameText.appendChild(document.createTextNode("Wait for the circle to turn green..."));
+        gamePage.appendChild(gameText);
         // create game page container
         let gameContainer = document.createElement("div");
         gameContainer.classList.add("tfny-container");
@@ -96,6 +105,14 @@ function startReactionTest(canvas) {
         startPage.style.display = 'none';
         gamePage.style.display = 'flex';
     })
+}
+
+function gameFunction() {
+
+}
+
+function returnResults() {
+    
 }
 
 // call start test function on button click
