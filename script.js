@@ -96,6 +96,17 @@ function startReactionTest(canvas) {
         h2.appendChild(document.createTextNode("When the red circle turns green, click/tap it as fast as possible. Click anywhere to begin!"));
         startContainer.appendChild(h2);
 
+    // append content to canvas
+    canvas.appendChild(startPage);
+    
+    // on click of start page, start game
+    startPage.addEventListener('click', () => {
+        // startPage.style.animation = '0.2s linear fadeout';
+        this.gameFunction(canvas);
+    })
+}
+
+function gameFunction(canvas) {
     // create game canvas
     let gamePage = document.createElement("section");
     gamePage.classList.add("tfny-gameWrapper");
@@ -115,17 +126,9 @@ function startReactionTest(canvas) {
         gameContainer.appendChild(circle);
 
     // append content to canvas
-    canvas.appendChild(startPage);
     canvas.appendChild(gamePage);
-    
-    // on click of start page, start game
-    startPage.addEventListener('click', () => {
-        startPage.style.animation = '0.2s linear fadein';
-        gamePage.style.display = 'flex';
-    })
-}
-
-function gameFunction() {
+    gamePage.style.display = 'flex';
+    console.log("yes")
 
 }
 
