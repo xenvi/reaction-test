@@ -1,4 +1,20 @@
 let styles = `
+    @keyframes fadein {
+        from {
+        opacity: 0;
+        }
+        to {
+        opacity: 1;
+        }
+    }
+    @keyframes fadeout {
+        from {
+        opacity: 1;
+        }
+        to {
+        opacity: 0;
+        }
+    }
     .tfny-wrapper {
         position: absolute;
         z-index: 1;
@@ -13,6 +29,7 @@ let styles = `
         color: #fff;
         font-family:"Helvetica Neue",Helvetica,"Lucida Grande","Lucida Sans Unicode",Arial,Verdana,sans-serif;
         cursor: pointer;
+        animation: 0.2s linear fadein;
     }
     .tfny-container {
         padding: 1rem;
@@ -40,6 +57,7 @@ let styles = `
         background: #4f9cd6;
         color: #fff;
         font-family:"Helvetica Neue",Helvetica,"Lucida Grande","Lucida Sans Unicode",Arial,Verdana,sans-serif;
+        animation: 0.2s linear fadein;
     }
     .tfny-gameText {
         color: #fff;
@@ -102,7 +120,7 @@ function startReactionTest(canvas) {
     
     // on click of start page, start game
     startPage.addEventListener('click', () => {
-        startPage.style.display = 'none';
+        startPage.style.animation = '0.2s linear fadein';
         gamePage.style.display = 'flex';
     })
 }
