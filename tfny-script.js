@@ -30,7 +30,19 @@ function startReactionTest(canvas) {
             background: #4f9cd6;
             color: #fff;
             font-family:"Helvetica Neue",Helvetica,"Lucida Grande","Lucida Sans Unicode",Arial,Verdana,sans-serif;
-            cursor: pointer;
+            animation: 0.2s linear tfny-fadein;
+        }
+        .tfny-innerWrapper {
+            position: absolute;
+            z-index: 2;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             animation: 0.2s linear tfny-fadein;
         }
         .tfny-container {
@@ -44,22 +56,6 @@ function startReactionTest(canvas) {
         .tfny-h2 {
             text-align: center;
             font-size: 1.3rem;
-        }
-        .tfny-gameWrapper {
-            position: absolute;
-            z-index: 1;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            display: none;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            background: #4f9cd6;
-            color: #fff;
-            font-family:"Helvetica Neue",Helvetica,"Lucida Grande","Lucida Sans Unicode",Arial,Verdana,sans-serif;
-            animation: 0.2s linear tfny-fadein;
         }
         .tfny-gameText {
             color: #fff;
@@ -81,32 +77,21 @@ function startReactionTest(canvas) {
             box-shadow: 0 2rem 1rem rgba(0, 0, 0, 0.3);
             cursor: pointer;
         }
-        .tfny-errorWrapper {
-            position: absolute;
-            z-index: 1;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            display: none;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            background: #4f9cd6;
-            color: #fff;
-            cursor: pointer;
-            font-family:"Helvetica Neue",Helvetica,"Lucida Grande","Lucida Sans Unicode",Arial,Verdana,sans-serif;
-            animation: 0.2s linear tfny-fadein;
-        }
     `
     let styleSheet = document.createElement("style");
     styleSheet.type = "text/css";
     styleSheet.innerText = styles;
     document.head.appendChild(styleSheet);
 
+    // create app wrapper
+    let appWrapper = document.createElement("section");
+    appWrapper.classList.add("tfny-wrapper");
+    canvas.appendChild(appWrapper);
+
     // create start page
     let startPage = document.createElement("section");
-    startPage.classList.add("tfny-wrapper");
+    startPage.classList.add("tfny-innerWrapper");
+    startPage.style.cursor = "pointer";
 
         // create start page container
         let startContainer = document.createElement("div");
@@ -123,12 +108,12 @@ function startReactionTest(canvas) {
         h2.appendChild(document.createTextNode("When the red circle turns green, click/tap it as fast as possible. Click anywhere to begin!"));
         startContainer.appendChild(h2);
 
-    // append content to canvas
-    canvas.appendChild(startPage);
+    // append content to wrapper
+    appWrapper.appendChild(startPage);
     
     // on click of start page, start game
     startPage.addEventListener('click', () => {
-        // startPage.style.animation = '0.2s linear fadeout';
+        startPage.parentNode.removeChild(startPage);
         gameFunction(canvas);
     })
 
@@ -139,7 +124,7 @@ function startReactionTest(canvas) {
 
         // create game canvas
         let gamePage = document.createElement("section");
-        gamePage.classList.add("tfny-gameWrapper");
+        gamePage.classList.add("tfny-innerWrapper");
     
             // create text
             let gameText = document.createElement('h2');
@@ -157,7 +142,8 @@ function startReactionTest(canvas) {
         
         // create error canvas when click too fast
         let errorPage = document.createElement("section");
-        errorPage.classList.add("tfny-errorWrapper");
+        errorPage.classList.add("tfny-innerWrapper");
+        errorPage.style.cursor = "pointer";
 
             // create title
             let h1 = document.createElement("h1");
@@ -170,8 +156,8 @@ function startReactionTest(canvas) {
             h2.appendChild(document.createTextNode("Click to try again."));
             errorPage.appendChild(h2);
     
-        // append content to canvas
-        canvas.appendChild(gamePage);
+        // append content to wrapper
+        appWrapper.appendChild(gamePage);
         gamePage.style.display = 'flex';
         
         // create timer
@@ -185,24 +171,26 @@ function startReactionTest(canvas) {
        // handle circle click
        circle.addEventListener('click', () => {
            if (circle.classList.contains('tfny-circleRed')) {
-                canvas.appendChild(errorPage);
+                appWrapper.appendChild(errorPage);
                 errorPage.style.display = 'flex';
-           //} else if (circle.classList.contains('tfny-circleGreen')) {
-             //   canvas.appendChild(resultPage);
-               // resultPage.style.display = 'flex';
+                gamePage.parentNode.removeChild(gamePage);
+           } else if (circle.classList.contains('tfny-circleGreen')) {
+                appWrapper.appendChild(resultPage);
+                resultPage.style.display = 'flex';
+                gamePage.parentNode.removeChild(gamePage);
             }
        })
 
        // on error page click, restart game
-       circle.addEventListener('click', () => {
-        if (circle.classList.contains('tfny-circleRed')) {
-             canvas.appendChild(errorPage);
-             errorPage.style.display = 'flex';
-        //} else if (circle.classList.contains('tfny-circleGreen')) {
-          //   canvas.appendChild(resultPage);
-            // resultPage.style.display = 'flex';
-         }
-    })
+       errorPage.addEventListener('click', () => {
+            errorPage.style.display = 'none';
+            errorPage.parentNode.removeChild(errorPage);
+            gameFunction(canvas);
+            //} else if (circle.classList.contains('tfny-circleGreen')) {
+            //   canvas.appendChild(resultPage);
+                // resultPage.style.display = 'flex';
+            //}
+        })
     }
 }
 
