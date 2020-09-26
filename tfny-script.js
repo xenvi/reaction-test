@@ -117,10 +117,15 @@ function startReactionTest(canvas) {
         gameFunction(canvas);
     })
 
+    // set variables
+    let roundNumber = 0;
+    let roundDataArr = [];
+
     function gameFunction(canvas) {
         // set variables
-        let roundNumber = 0;
-        let roundDataArr = [];
+        let startTime;
+        let interval;
+        let finalRoundTime = 0;
 
         // create game canvas
         let gamePage = document.createElement("section");
@@ -156,17 +161,45 @@ function startReactionTest(canvas) {
             h2.appendChild(document.createTextNode("Click to try again."));
             errorPage.appendChild(h2);
     
+        // create results canvas on successful click
+        let resultPage = document.createElement("section");
+        resultPage.classList.add("tfny-innerWrapper");
+        resultPage.style.cursor = "pointer";
+
+            // create time result
+            let timeText = document.createElement("h1")
+            timeText.classList.add("tfny-timeText");
+            resultPage.appendChild(timeText);
+            // create subtitle
+            let clickTextNode
+            if (roundNumber == 10) {
+                clickTextNode = "Calculating results ..."
+            } else {
+                clickTextNode = "Click anywhere to continue"
+            }
+            let clickText = document.createElement("h1")
+            clickText.classList.add("tfny-h2");
+            clickText.appendChild(document.createTextNode(clickTextNode));
+            resultPage.appendChild(clickText);
+            // display graph
+
+            // display round
+            let roundText = document.createElement("h2")
+            roundText.classList.add("tfny-roundText");
+            resultPage.appendChild(roundText);
+
         // append content to wrapper
         appWrapper.appendChild(gamePage);
         gamePage.style.display = 'flex';
         
-        // create timer
-        var rand = Math.floor(Math.random() * 3000) + 2000  // 2-3 secs
+        // create button red to green timer
+        var rand = Math.floor(Math.random() * 3000) + 2000
         function changeButton() {
             circle.classList.add("tfny-circleGreen");
             circle.classList.remove("tfny-circleRed");
+            startTimer();
         }
-        setTimeout(changeButton, rand);
+        circleTimer = setTimeout(changeButton, rand);
 
        // handle circle click
        circle.addEventListener('click', () => {
@@ -174,10 +207,13 @@ function startReactionTest(canvas) {
                 appWrapper.appendChild(errorPage);
                 errorPage.style.display = 'flex';
                 gamePage.parentNode.removeChild(gamePage);
+                clearTimeout(circleTimer)
            } else if (circle.classList.contains('tfny-circleGreen')) {
                 appWrapper.appendChild(resultPage);
                 resultPage.style.display = 'flex';
                 gamePage.parentNode.removeChild(gamePage);
+                stopTimer();
+                currentRound();
             }
        })
 
@@ -186,11 +222,35 @@ function startReactionTest(canvas) {
             errorPage.style.display = 'none';
             errorPage.parentNode.removeChild(errorPage);
             gameFunction(canvas);
-            //} else if (circle.classList.contains('tfny-circleGreen')) {
-            //   canvas.appendChild(resultPage);
-                // resultPage.style.display = 'flex';
-            //}
         })
+        
+        // on result page click, continue game
+       resultPage.addEventListener('click', () => {
+            resultPage.style.display = 'none';
+            resultPage.parentNode.removeChild(resultPage);
+            gameFunction(canvas);
+        })
+
+        function startTimer() {
+            startTime = Date.now();
+            interval = setInterval(function(){
+                let currentTime = Date.now() - startTime
+                finalTime = currentTime;
+            });
+        }
+        function stopTimer(){
+            timeText.appendChild(document.createTextNode(finalRoundTime + " ms"))
+            // add to roundDataArr here
+            clearInterval(interval);
+        }
+        function currentRound() {
+            if (roundNumber >= 10) {
+                roundNumber = 10;
+            } else {
+                roundNumber++;
+            }
+            roundText.appendChild(document.createTextNode("Round " + roundNumber + " out of 10"));
+        }
     }
 }
 
