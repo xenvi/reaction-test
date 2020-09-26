@@ -182,7 +182,21 @@ function startReactionTest(canvas) {
             clickText.appendChild(document.createTextNode(clickTextNode));
             resultPage.appendChild(clickText);
             // display graph
-
+            function displayGraph() {
+                d3.select(resultPage).append('svg')
+                .attr('height', 300)
+                .attr('width', 800)
+                .selectAll('rect')
+                    .data(roundDataArr)
+                    .enter()
+                    .append('rect')
+                    .attr('y', function (d, i) { return i * 40 })
+                    .attr('height', 35)
+                    .attr('x', 0)
+                    .attr('width', function (d) { return d*100})
+                    .style('fill', 'steelblue');
+            }
+            displayGraph()
             // display round
             let roundText = document.createElement("h2")
             roundText.classList.add("tfny-roundText");
@@ -235,13 +249,16 @@ function startReactionTest(canvas) {
             startTime = Date.now();
             interval = setInterval(function(){
                 let currentTime = Date.now() - startTime
-                finalTime = currentTime;
+                updateDisplay(currentTime);
             });
         }
         function stopTimer(){
-            timeText.appendChild(document.createTextNode(finalRoundTime + " ms"))
-            // add to roundDataArr here
+            timeText.appendChild(document.createTextNode(finalRoundTime + " ms"));
+            roundDataArr.push(finalRoundTime);
             clearInterval(interval);
+        }
+        function updateDisplay(currentTime){
+            finalRoundTime = currentTime;
         }
         function currentRound() {
             if (roundNumber >= 10) {
@@ -254,6 +271,20 @@ function startReactionTest(canvas) {
     }
 }
 
-// call start test function on button click
-const startButton = document.getElementById("start");
-startButton.addEventListener('click', () => startReactionTest(document.getElementById("tfny-canvas")))
+function loadReactionScript(url, callback) {
+    var head = document.head;
+    var script = document.createElement('script');
+    script.type = 'text/javascript';
+    script.src = url;
+    script.onreadystatechange = callback;
+    script.onload = callback;
+    head.appendChild(script);
+    console.log("loaded")
+}
+var callReactionTest = function() {
+    // call start test function on button click
+    const startButton = document.getElementById("start");
+    startButton.addEventListener('click', () => startReactionTest(document.getElementById("tfny-canvas")))
+}
+
+loadReactionScript('https://d3js.org/d3.v5.min.js', callReactionTest);
