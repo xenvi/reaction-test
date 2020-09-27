@@ -17,6 +17,33 @@ function startReactionTest(canvas) {
             opacity: 0;
             }
         }
+        @keyframes bgGradient {
+            0% {
+                background-position: 0% 50%;
+            }
+            50% {
+                background-position: 100% 50%;
+            }
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+        @keyframes pulse {
+            0% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
+            }
+            
+            70% {
+                transform: scale(1);
+                box-shadow: 0 0 0 10px rgba(255, 255, 255, 0);
+            }
+            
+            100% {
+                transform: scale(0.95);
+                box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+            }
+        }
         .tfny-wrapper {
             position: absolute;
             z-index: 1;
@@ -27,10 +54,11 @@ function startReactionTest(canvas) {
             display: flex;
             justify-content: center;
             align-items: center;
-            background: #4f9cd6;
+            background: linear-gradient(-45deg, #2fa0cf, #4b87e0, #5577c2);
+            background-size: 400% 400%;
+            animation: tfny-fadein 0.2s linear, bgGradient 15s ease infinite;
             color: #fff;
             font-family:"Helvetica Neue",Helvetica,"Lucida Grande","Lucida Sans Unicode",Arial,Verdana,sans-serif;
-            animation: 0.2s linear tfny-fadein;
         }
         .tfny-innerWrapper {
             position: absolute;
@@ -50,7 +78,10 @@ function startReactionTest(canvas) {
         }
         .tfny-h1 {
             text-align: center;
-            font-size: 4rem;
+            font-size: 3rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-weight: normal;
             margin: 0
         }
         .tfny-h2 {
@@ -77,6 +108,28 @@ function startReactionTest(canvas) {
             box-shadow: 0 2rem 1rem rgba(0, 0, 0, 0.3);
             cursor: pointer;
         }
+        .tfny-icons {
+            margin: 0 auto 15px auto;
+            width: 75px;
+            height: 75px;box-shadow: 0 0 0 0 rgba(255, 255, 255, 1);
+        }
+        .tfny-icons svg path {
+            animation: pulse 2s ease infinite;
+        }
+
+        .tfny-axis path, .tfny-axis line {
+        fill: none;
+        stroke: #fff;
+        stroke-width: 2px;
+        }
+
+        .tfny-graphArea { fill: rgba(255,255,255,0.4); }
+
+        .tfny-graphLine {
+            fill: none;
+            stroke: #fff;
+            stroke-width: 4px;
+          }
     `
     let styleSheet = document.createElement("style");
     styleSheet.type = "text/css";
@@ -97,6 +150,13 @@ function startReactionTest(canvas) {
         let startContainer = document.createElement("div");
         startContainer.classList.add("tfny-container");
         startPage.appendChild(startContainer);
+        // create icon
+        let startIcon = document.createElement('div')
+        startIcon.classList.add("tfny-icons");
+        startIcon.innerHTML+=`<svg viewBox="0 0 20 20">
+        <path fill="#fff" d="M15.94,10.179l-2.437-0.325l1.62-7.379c0.047-0.235-0.132-0.458-0.372-0.458H5.25c-0.241,0-0.42,0.223-0.373,0.458l1.634,7.376L4.06,10.179c-0.312,0.041-0.446,0.425-0.214,0.649l2.864,2.759l-0.724,3.947c-0.058,0.315,0.277,0.554,0.559,0.401l3.457-1.916l3.456,1.916c-0.419-0.238,0.56,0.439,0.56-0.401l-0.725-3.947l2.863-2.759C16.388,10.604,16.254,10.22,15.94,10.179M10.381,2.778h3.902l-1.536,6.977L12.036,9.66l-1.655-3.546V2.778z M5.717,2.778h3.903v3.335L7.965,9.66L7.268,9.753L5.717,2.778zM12.618,13.182c-0.092,0.088-0.134,0.217-0.11,0.343l0.615,3.356l-2.938-1.629c-0.057-0.03-0.122-0.048-0.184-0.048c-0.063,0-0.128,0.018-0.185,0.048l-2.938,1.629l0.616-3.356c0.022-0.126-0.019-0.255-0.11-0.343l-2.441-2.354l3.329-0.441c0.128-0.017,0.24-0.099,0.295-0.215l1.435-3.073l1.435,3.073c0.055,0.116,0.167,0.198,0.294,0.215l3.329,0.441L12.618,13.182z"></path>
+        </svg>`;
+        startContainer.appendChild(startIcon)
         // create title
         let h1 = document.createElement("h1");
         h1.classList.add("tfny-h1");
@@ -105,8 +165,9 @@ function startReactionTest(canvas) {
         // create subtitle
         let h2 = document.createElement("h2");
         h2.classList.add("tfny-h2");
-        h2.appendChild(document.createTextNode("When the red circle turns green, click/tap it as fast as possible. Click anywhere to begin!"));
+        h2.appendChild(document.createTextNode("When the red circle turns green, click it as fast as possible. Click anywhere to begin!"));
         startContainer.appendChild(h2);
+
 
     // append content to wrapper
     appWrapper.appendChild(startPage);
@@ -119,7 +180,7 @@ function startReactionTest(canvas) {
 
     // set variables
     let roundNumber = 0;
-    let roundDataArr = [];
+    let roundDataArr = [{'round': 0, 'data': 0}];
 
     function gameFunction(canvas) {
         // set variables
@@ -184,7 +245,9 @@ function startReactionTest(canvas) {
             clickText.appendChild(document.createTextNode(clickTextNode));
             resultPage.appendChild(clickText);
             // display graph
-            displayRoundGraph()
+            let graphWrapper = document.createElement("div")
+            graphWrapper.classList.add("tfny-graphWrapper");
+            resultPage.appendChild(graphWrapper);
             // display round
             let roundText = document.createElement("h2")
             roundText.classList.add("tfny-roundText");
@@ -216,6 +279,7 @@ function startReactionTest(canvas) {
                 gamePage.parentNode.removeChild(gamePage);
                 currentRound();
                 stopTimer();
+                displayGraph();
             }
        })
 
@@ -236,78 +300,59 @@ function startReactionTest(canvas) {
         })
 
         // functions
-        function displayRoundGraph() {
-            // set the dimensions and margins of the graph
-            var margin = {top: 10, right: 30, bottom: 30, left: 50},
-            width = 360 - margin.left - margin.right,
-            height = 300 - margin.top - margin.bottom;
-
-            // append the svg object to the body of the page
-            var svg = d3.select(resultPage)
-            .append("svg")
-            .attr("width", width + margin.left + margin.right)
-            .attr("height", height + margin.top + margin.bottom)
-            .append("g")
-            .attr("transform",
-                "translate(" + margin.left + "," + margin.top + ")");
-
-            //Read the data
-            roundDataArr.forEach(function(d) {
-                return { round : d.round, data : d.data } },
-            // Now I can use this dataset:
-            function(data) {
-
-            // Add X axis 
+        function displayGraph() {
+            var margin = {top: 20, right: 20, bottom: 30, left: 50},
+                width = 575 - margin.left - margin.right,
+                height = 350 - margin.top - margin.bottom;
+            
             var x = d3.scaleLinear()
-            .domain(d3.extent(data, function(d) { return d.round; }))
-            .range([ 0, width ]);
-            svg.append("g")
-            .attr("transform", "translate(0," + (height+5) + ")")
-            .call(d3.axisBottom(x).ticks(5).tickSizeOuter(0));
-
-            // Add Y axis
+                .domain([0, d3.max(roundDataArr, function(d) { return d.round; })])
+                .range([0, width]);
+            
             var y = d3.scaleLinear()
-            .domain( d3.extent(data, function(d) { return +d.data; }) )
-            .range([ height, 0 ]);
+                .domain([0, d3.max(roundDataArr, function(d) { return d.data; })])
+                .range([height, 0]);
+            
+            var xAxis = d3.axisBottom()
+                .scale(x).tickSize(0).tickValues([]);
+            
+            var yAxis = d3.axisLeft()
+                .scale(y).tickSize(0).tickValues([]);
+            
+            var area = d3.area()
+                .x(function(d) { return x(d.round); })
+                .y0(height)
+                .y1(function(d) { return y(d.data); });
+            
+            var valueline = d3.line()
+                .x(function(d) { return x(d.round); })
+                .y(function(d) { return y(d.data); });
+            
+            var svg = d3.select(".tfny-graphWrapper")
+                .append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+                .append("g")
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+            
+            svg.append("path")
+                .datum(roundDataArr)
+                .attr("class", "tfny-graphArea")
+                .attr("d", area);
+            
+            svg.append("path")
+                .datum(roundDataArr)
+                .attr("class", "tfny-graphLine")
+                .attr("d", valueline);
+            
             svg.append("g")
-            .attr("transform", "translate(-5,0)")
-            .call(d3.axisLeft(y).tickSizeOuter(0));
-
-            // Add the area
-            svg.append("path")
-            .datum(data)
-            .attr("fill", "#69b3a2")
-            .attr("fill-opacity", .3)
-            .attr("stroke", "none")
-            .attr("d", d3.area()
-                .x(function(d) { return x(d.round) })
-                .y0( height )
-                .y1(function(d) { return y(d.data) })
-                )
-
-            // Add the line
-            svg.append("path")
-            .datum(data)
-            .attr("fill", "none")
-            .attr("stroke", "#69b3a2")
-            .attr("stroke-width", 4)
-            .attr("d", d3.line()
-                .x(function(d) { return x(d.round) })
-                .y(function(d) { return y(d.data) })
-                )
-
-            // Add the line
-            svg.selectAll("myCircles")
-            .data(data)
-            .enter()
-            .append("circle")
-                .attr("fill", "red")
-                .attr("stroke", "none")
-                .attr("cx", function(d) { return x(d.round) })
-                .attr("cy", function(d) { return y(d.data) })
-                .attr("r", 3)
-
-            })
+                .attr("class", "tfny-x tfny-axis")
+                .attr("transform", "translate(0," + height + ")")
+                .call(xAxis);
+            
+            svg.append("g")
+                .attr("class", "tfny-y tfny-axis")
+                .call(yAxis);
         }
         function startTimer() {
             startTime = Date.now();
@@ -318,7 +363,7 @@ function startReactionTest(canvas) {
         }
         function stopTimer(){
             timeText.appendChild(document.createTextNode(finalRoundTime + " ms"));
-            roundDataArr.push({'round': roundNumber, 'data': finalRoundTime});
+            roundDataArr = [...roundDataArr, {'round': roundNumber, 'data': finalRoundTime}]
             console.log(roundDataArr)
             clearInterval(interval);
         }
