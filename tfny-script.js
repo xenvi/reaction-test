@@ -171,32 +171,20 @@ function startReactionTest(canvas) {
             timeText.classList.add("tfny-timeText");
             resultPage.appendChild(timeText);
             // create subtitle
+            // if round is 10, exit resultsPage and return average data
             let clickTextNode
-            if (roundNumber == 10) {
-                clickTextNode = "Calculating results ..."
+            if (roundNumber < 9) {
+                clickTextNode = "Click anywhere to continue";
             } else {
-                clickTextNode = "Click anywhere to continue"
+                clickTextNode = "Calculating results ...";
+                setTimeout(endReactionTest, 5000)
             }
-            let clickText = document.createElement("h1")
+            let clickText = document.createElement("h2")
             clickText.classList.add("tfny-h2");
             clickText.appendChild(document.createTextNode(clickTextNode));
             resultPage.appendChild(clickText);
             // display graph
-            function displayGraph() {
-                d3.select(resultPage).append('svg')
-                .attr('height', 300)
-                .attr('width', 800)
-                .selectAll('rect')
-                    .data(roundDataArr)
-                    .enter()
-                    .append('rect')
-                    .attr('y', function (d, i) { return i * 40 })
-                    .attr('height', 35)
-                    .attr('x', 0)
-                    .attr('width', function (d) { return d*100})
-                    .style('fill', 'steelblue');
-            }
-            displayGraph()
+            displayRoundGraph()
             // display round
             let roundText = document.createElement("h2")
             roundText.classList.add("tfny-roundText");
@@ -207,7 +195,7 @@ function startReactionTest(canvas) {
         gamePage.style.display = 'flex';
         
         // create button red to green timer
-        var rand = Math.floor(Math.random() * 3000) + 2000
+        var rand = Math.floor(Math.random() * 2000) + 2000
         function changeButton() {
             circle.classList.add("tfny-circleGreen");
             circle.classList.remove("tfny-circleRed");
@@ -226,8 +214,8 @@ function startReactionTest(canvas) {
                 appWrapper.appendChild(resultPage);
                 resultPage.style.display = 'flex';
                 gamePage.parentNode.removeChild(gamePage);
-                stopTimer();
                 currentRound();
+                stopTimer();
             }
        })
 
@@ -240,11 +228,87 @@ function startReactionTest(canvas) {
         
         // on result page click, continue game
        resultPage.addEventListener('click', () => {
-            resultPage.style.display = 'none';
-            resultPage.parentNode.removeChild(resultPage);
-            gameFunction(canvas);
+            if (roundNumber < 10) {
+                resultPage.style.display = 'none';
+                resultPage.parentNode.removeChild(resultPage);
+                gameFunction(canvas);
+            }
         })
 
+        // functions
+        function displayRoundGraph() {
+            // set the dimensions and margins of the graph
+            var margin = {top: 10, right: 30, bottom: 30, left: 50},
+            width = 360 - margin.left - margin.right,
+            height = 300 - margin.top - margin.bottom;
+
+            // append the svg object to the body of the page
+            var svg = d3.select(resultPage)
+            .append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+            .attr("transform",
+                "translate(" + margin.left + "," + margin.top + ")");
+
+            //Read the data
+            roundDataArr.forEach(function(d) {
+                return { round : d.round, data : d.data } },
+            // Now I can use this dataset:
+            function(data) {
+
+            // Add X axis 
+            var x = d3.scaleLinear()
+            .domain(d3.extent(data, function(d) { return d.round; }))
+            .range([ 0, width ]);
+            svg.append("g")
+            .attr("transform", "translate(0," + (height+5) + ")")
+            .call(d3.axisBottom(x).ticks(5).tickSizeOuter(0));
+
+            // Add Y axis
+            var y = d3.scaleLinear()
+            .domain( d3.extent(data, function(d) { return +d.data; }) )
+            .range([ height, 0 ]);
+            svg.append("g")
+            .attr("transform", "translate(-5,0)")
+            .call(d3.axisLeft(y).tickSizeOuter(0));
+
+            // Add the area
+            svg.append("path")
+            .datum(data)
+            .attr("fill", "#69b3a2")
+            .attr("fill-opacity", .3)
+            .attr("stroke", "none")
+            .attr("d", d3.area()
+                .x(function(d) { return x(d.round) })
+                .y0( height )
+                .y1(function(d) { return y(d.data) })
+                )
+
+            // Add the line
+            svg.append("path")
+            .datum(data)
+            .attr("fill", "none")
+            .attr("stroke", "#69b3a2")
+            .attr("stroke-width", 4)
+            .attr("d", d3.line()
+                .x(function(d) { return x(d.round) })
+                .y(function(d) { return y(d.data) })
+                )
+
+            // Add the line
+            svg.selectAll("myCircles")
+            .data(data)
+            .enter()
+            .append("circle")
+                .attr("fill", "red")
+                .attr("stroke", "none")
+                .attr("cx", function(d) { return x(d.round) })
+                .attr("cy", function(d) { return y(d.data) })
+                .attr("r", 3)
+
+            })
+        }
         function startTimer() {
             startTime = Date.now();
             interval = setInterval(function(){
@@ -254,7 +318,8 @@ function startReactionTest(canvas) {
         }
         function stopTimer(){
             timeText.appendChild(document.createTextNode(finalRoundTime + " ms"));
-            roundDataArr.push(finalRoundTime);
+            roundDataArr.push({'round': roundNumber, 'data': finalRoundTime});
+            console.log(roundDataArr)
             clearInterval(interval);
         }
         function updateDisplay(currentTime){
@@ -268,6 +333,21 @@ function startReactionTest(canvas) {
             }
             roundText.appendChild(document.createTextNode("Round " + roundNumber + " out of 10"));
         }
+        function endReactionTest() {
+            let newDataArr = [];
+            let total = 0;
+            let avg = 0;
+            roundDataArr.forEach((item) => {
+                newDataArr.push(item.data);
+            });
+            newDataArr.forEach((item) => {
+                total += item
+            })
+            avg = total / newDataArr.length
+            console.log('avg', avg)
+            return avg;
+
+        }
     }
 }
 
@@ -279,12 +359,9 @@ function loadReactionScript(url, callback) {
     script.onreadystatechange = callback;
     script.onload = callback;
     head.appendChild(script);
-    console.log("loaded")
 }
-var callReactionTest = function() {
-    // call start test function on button click
-    const startButton = document.getElementById("start");
-    startButton.addEventListener('click', () => startReactionTest(document.getElementById("tfny-canvas")))
+let callReactionTest = function() {
+    startReactionTest(document.getElementById("tfny-canvas"))
 }
 
 loadReactionScript('https://d3js.org/d3.v5.min.js', callReactionTest);
