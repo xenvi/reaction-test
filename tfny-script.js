@@ -334,6 +334,7 @@ function startReactionTest(canvas) {
             roundText.appendChild(document.createTextNode("Round " + roundNumber + " out of 10"));
         }
         function endReactionTest() {
+            // calc avg
             let newDataArr = [];
             let total = 0;
             let avg = 0;
@@ -345,8 +346,12 @@ function startReactionTest(canvas) {
             })
             avg = total / newDataArr.length
             console.log('avg', avg)
-            return avg;
 
+            // clear data values
+            roundDataArr = 0;
+            roundNumber = 0;
+
+            return avg;
         }
     }
 }
