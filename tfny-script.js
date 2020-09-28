@@ -1,6 +1,9 @@
 function startReactionTest(canvas) {
-    // load files
+    // load files - remove box-sizing on deliver
     let styles = `
+        body, html, * {
+            box-sizing: border-box;
+        }
         @keyframes tfny-fadein {
             from {
             opacity: 0;
@@ -44,7 +47,19 @@ function startReactionTest(canvas) {
                 box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
             }
         }
-        .tfny-wrapper {
+        @keyframes blink {
+            0% {
+              opacity: .2;
+            }
+            20% {
+              opacity: 1;
+            }
+            100% {
+              opacity: .2;
+            }
+        }
+          
+        .tfny-container {
             position: absolute;
             z-index: 1;
             top: 0;
@@ -60,21 +75,27 @@ function startReactionTest(canvas) {
             color: #fff;
             font-family:"Helvetica Neue",Helvetica,"Lucida Grande","Lucida Sans Unicode",Arial,Verdana,sans-serif;
         }
-        .tfny-innerWrapper {
+        .tfny-colWrapper {
             position: absolute;
             z-index: 2;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
+            padding: 1rem;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             animation: 0.2s linear tfny-fadein;
         }
-        .tfny-container {
-            padding: 1rem;
+        .tfny-rowWrapper {
+            width: 100%;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin: 1rem 0;
+            animation: 0.2s linear tfny-fadein;
         }
         .tfny-h1 {
             text-align: center;
@@ -82,27 +103,53 @@ function startReactionTest(canvas) {
             text-transform: uppercase;
             letter-spacing: 3px;
             font-weight: normal;
-            margin: 0
+            margin: 0;
+            text-shadow: 0 0.5rem 0.3rem rgba(0,0,0,0.2);
         }
         .tfny-h2 {
             text-align: center;
             font-size: 1.3rem;
+            text-shadow: 0 0.3rem 0.1rem rgba(0,0,0,0.2);
+        }
+        .tfny-h2-red {
+            color: #f20c0c;
+        }
+        .tfny-h2-green {
+            color: #0cf264;
         }
         .tfny-gameText {
             color: #fff;
+            font-size: 2rem;
             text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-shadow: 0 0.3rem 0.1rem rgba(0,0,0,0.2);
+        }
+        .tfny-gameText span {
+            font-family: georgia;
+            animation: 1.4s both infinite blink;
+        }
+        .tfny-gameText span:nth-child(2) {
+            animation-delay: .2s;
+        }
+        .tfny-gameText span:nth-child(3) {
+            animation-delay: .4s;
         }
         .tfny-circleRed {
-            width: 200px;
-            height: 200px;
+            max-width: 300px;
+            max-height: 300px;
+            width: 100%;
+            height: 100%;
             border-radius: 50%;
             background: #f20c0c;
             box-shadow: 0 2rem 1rem rgba(0, 0, 0, 0.3);
             cursor: pointer;
         }
         .tfny-circleGreen {
-            width: 200px;
-            height: 200px;
+            max-width: 300px;
+            max-height: 300px;
+            width: 100%;
+            height: 100%;
             border-radius: 50%;
             background: #0cf264;
             box-shadow: 0 2rem 1rem rgba(0, 0, 0, 0.3);
@@ -111,25 +158,32 @@ function startReactionTest(canvas) {
         .tfny-icons {
             margin: 0 auto 15px auto;
             width: 75px;
-            height: 75px;box-shadow: 0 0 0 0 rgba(255, 255, 255, 1);
+            height: 75px;
         }
         .tfny-icons svg path {
-            animation: pulse 2s ease infinite;
+            box-shadow: 0 0 0 0 rgba(255, 255, 255, 1);
+            //animation: pulse 2s ease infinite;
         }
-
         .tfny-axis path, .tfny-axis line {
-        fill: none;
-        stroke: #fff;
-        stroke-width: 2px;
+            fill: none;
+            stroke: #fff;
+            stroke-width: 2px;
         }
-
-        .tfny-graphArea { fill: rgba(255,255,255,0.4); }
-
+        .tfny-graphArea {
+            fill: rgba(255,255,255,0.4);
+        }
         .tfny-graphLine {
             fill: none;
             stroke: #fff;
             stroke-width: 4px;
-          }
+        }
+        .tfny-count {
+            font-size: 10rem;
+            border: 1rem solid #fff;
+            color: #fff;
+            border-radius: 50%;
+            padding: 0 3rem;
+        }
     `
     let styleSheet = document.createElement("style");
     styleSheet.type = "text/css";
@@ -138,35 +192,42 @@ function startReactionTest(canvas) {
 
     // create app wrapper
     let appWrapper = document.createElement("section");
-    appWrapper.classList.add("tfny-wrapper");
+    appWrapper.classList.add("tfny-container");
     canvas.appendChild(appWrapper);
 
     // create start page
     let startPage = document.createElement("section");
-    startPage.classList.add("tfny-innerWrapper");
+    startPage.classList.add("tfny-colWrapper");
     startPage.style.cursor = "pointer";
 
-        // create start page container
-        let startContainer = document.createElement("div");
-        startContainer.classList.add("tfny-container");
-        startPage.appendChild(startContainer);
         // create icon
         let startIcon = document.createElement('div')
         startIcon.classList.add("tfny-icons");
         startIcon.innerHTML+=`<svg viewBox="0 0 20 20">
         <path fill="#fff" d="M15.94,10.179l-2.437-0.325l1.62-7.379c0.047-0.235-0.132-0.458-0.372-0.458H5.25c-0.241,0-0.42,0.223-0.373,0.458l1.634,7.376L4.06,10.179c-0.312,0.041-0.446,0.425-0.214,0.649l2.864,2.759l-0.724,3.947c-0.058,0.315,0.277,0.554,0.559,0.401l3.457-1.916l3.456,1.916c-0.419-0.238,0.56,0.439,0.56-0.401l-0.725-3.947l2.863-2.759C16.388,10.604,16.254,10.22,15.94,10.179M10.381,2.778h3.902l-1.536,6.977L12.036,9.66l-1.655-3.546V2.778z M5.717,2.778h3.903v3.335L7.965,9.66L7.268,9.753L5.717,2.778zM12.618,13.182c-0.092,0.088-0.134,0.217-0.11,0.343l0.615,3.356l-2.938-1.629c-0.057-0.03-0.122-0.048-0.184-0.048c-0.063,0-0.128,0.018-0.185,0.048l-2.938,1.629l0.616-3.356c0.022-0.126-0.019-0.255-0.11-0.343l-2.441-2.354l3.329-0.441c0.128-0.017,0.24-0.099,0.295-0.215l1.435-3.073l1.435,3.073c0.055,0.116,0.167,0.198,0.294,0.215l3.329,0.441L12.618,13.182z"></path>
+        <animateTransform attributeType="XML" attributeName="transform" type="scale"       values="1;1.25;1" additive="sum" begin="0s" dur="2s" repeatCount="indefinite"/>
         </svg>`;
-        startContainer.appendChild(startIcon)
+        startPage.appendChild(startIcon)
         // create title
         let h1 = document.createElement("h1");
         h1.classList.add("tfny-h1");
         h1.appendChild(document.createTextNode("Reaction Time Test"));
-        startContainer.appendChild(h1);
+        startPage.appendChild(h1);
         // create subtitle
         let h2 = document.createElement("h2");
         h2.classList.add("tfny-h2");
-        h2.appendChild(document.createTextNode("When the red circle turns green, click it as fast as possible. Click anywhere to begin!"));
-        startContainer.appendChild(h2);
+        h2.appendChild(document.createTextNode("When the "));
+        let red = document.createElement('span');
+        red.classList.add("tfny-h2-red");
+        red.appendChild(document.createTextNode("red"));
+        h2.appendChild(red);
+        h2.appendChild(document.createTextNode(" circle turns "));
+        let green = document.createElement('span');
+        green.classList.add("tfny-h2-green");
+        green.appendChild(document.createTextNode("green"));
+        h2.appendChild(green);
+        h2.appendChild(document.createTextNode(", click it as fast as possible. Click anywhere to begin!"));
+        startPage.appendChild(h2);
 
 
     // append content to wrapper
@@ -190,25 +251,30 @@ function startReactionTest(canvas) {
 
         // create game canvas
         let gamePage = document.createElement("section");
-        gamePage.classList.add("tfny-innerWrapper");
+        gamePage.classList.add("tfny-colWrapper");
     
-            // create text
-            let gameText = document.createElement('h2');
+            // create loading text
+            let gameText = document.createElement('p');
             gameText.classList.add("tfny-gameText");
-            gameText.appendChild(document.createTextNode("Wait for the circle to turn green..."));
+            gameText.appendChild(document.createTextNode("Wait"));
+            let span1 = document.createElement('span');
+            span1.appendChild(document.createTextNode("."));
+            let span2 = document.createElement('span');
+            span2.appendChild(document.createTextNode("."));
+            let span3 = document.createElement('span');
+            span3.appendChild(document.createTextNode("."));
+            gameText.appendChild(span1);
+            gameText.appendChild(span2);
+            gameText.appendChild(span3);
             gamePage.appendChild(gameText);
-            // create game page container
-            let gameContainer = document.createElement("div");
-            gameContainer.classList.add("tfny-container");
-            gamePage.appendChild(gameContainer);
             // create circle
             let circle = document.createElement('div');
             circle.classList.add("tfny-circleRed");
-            gameContainer.appendChild(circle);
+            gamePage.appendChild(circle);
         
         // create error canvas when click too fast
         let errorPage = document.createElement("section");
-        errorPage.classList.add("tfny-innerWrapper");
+        errorPage.classList.add("tfny-colWrapper");
         errorPage.style.cursor = "pointer";
 
             // create title
@@ -224,32 +290,34 @@ function startReactionTest(canvas) {
     
         // create results canvas on successful click
         let resultPage = document.createElement("section");
-        resultPage.classList.add("tfny-innerWrapper");
+        resultPage.classList.add("tfny-colWrapper");
         resultPage.style.cursor = "pointer";
 
             // create time result
-            let timeText = document.createElement("h1")
-            timeText.classList.add("tfny-timeText");
+            let timeText = document.createElement("h1");
+            timeText.classList.add("tfny-h1");
             resultPage.appendChild(timeText);
-            // create subtitle
-            // if round is 10, exit resultsPage and return average data
-            let clickTextNode
-            if (roundNumber < 9) {
-                clickTextNode = "Click anywhere to continue";
-            } else {
-                clickTextNode = "Calculating results ...";
-                setTimeout(endReactionTest, 5000)
-            }
-            let clickText = document.createElement("h2")
-            clickText.classList.add("tfny-h2");
-            clickText.appendChild(document.createTextNode(clickTextNode));
-            resultPage.appendChild(clickText);
+            // create row wrapper for graph + countdown
+            let resultRow = document.createElement('section');
+            resultRow.classList.add("tfny-rowWrapper");
             // display graph
             let graphWrapper = document.createElement("div")
             graphWrapper.classList.add("tfny-graphWrapper");
-            resultPage.appendChild(graphWrapper);
+            resultRow.appendChild(graphWrapper);
+            // create countdown - if round is last, exit resultsPage and return average data
+            let continueText = document.createElement("span");
+            if (roundNumber < 9) {
+                continueText.classList.add("tfny-count");
+                continueText.appendChild(document.createTextNode('5'));
+            } else {
+                continueText.classList.add("tfny-h1");
+                continueText.appendChild(document.createTextNode('Calculating results ...'));
+                setTimeout(endReactionTest, 3000)
+            }
+            resultRow.appendChild(continueText);
+            resultPage.appendChild(resultRow);
             // display round
-            let roundText = document.createElement("h2")
+            let roundText = document.createElement("h1")
             roundText.classList.add("tfny-roundText");
             resultPage.appendChild(roundText);
 
@@ -279,6 +347,7 @@ function startReactionTest(canvas) {
                 gamePage.parentNode.removeChild(gamePage);
                 currentRound();
                 stopTimer();
+                countdown();
                 displayGraph();
             }
        })
@@ -288,15 +357,6 @@ function startReactionTest(canvas) {
             errorPage.style.display = 'none';
             errorPage.parentNode.removeChild(errorPage);
             gameFunction(canvas);
-        })
-        
-        // on result page click, continue game
-       resultPage.addEventListener('click', () => {
-            if (roundNumber < 10) {
-                resultPage.style.display = 'none';
-                resultPage.parentNode.removeChild(resultPage);
-                gameFunction(canvas);
-            }
         })
 
         // functions
@@ -369,6 +429,21 @@ function startReactionTest(canvas) {
         }
         function updateDisplay(currentTime){
             finalRoundTime = currentTime;
+        }
+        function countdown() {
+            var timeRemaining = 4;
+            var timer = setInterval(function(){
+                if(timeRemaining <= 0){
+                    clearInterval(timer);
+                    document.querySelector(".tfny-count").innerHTML = 0;
+                    resultPage.style.display = 'none';
+                    resultPage.parentNode.removeChild(resultPage);
+                    gameFunction(canvas);
+                } else {
+                    document.querySelector(".tfny-count").innerHTML = timeRemaining;
+                }
+                timeRemaining -= 1;
+            }, 1000);
         }
         function currentRound() {
             if (roundNumber >= 10) {
