@@ -1,4 +1,4 @@
-function startReactionTest(canvas) {
+function startReactionTest(canvas, userPickedRound) {
     // load files - remove box-sizing on deliver
     let styles = `
         body, html, * {
@@ -96,19 +96,39 @@ function startReactionTest(canvas) {
             margin: 1rem 0;
             animation: 0.2s linear tfny-fadein;
         }
+        .tfny-continueWrapper {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            margin-left: 2rem;
+        }
+        .tfny-graphWrapper {
+            margin-right: 2rem;
+        }
         .tfny-h1 {
             text-align: center;
             font-size: 3rem;
             text-transform: uppercase;
             letter-spacing: 3px;
             font-weight: normal;
-            margin: 0;
+            margin: 0 0 1rem 0;
+            text-shadow: 0 0.5rem 0.3rem rgba(0,0,0,0.2);
+        }
+        .tfny-h1-leftAlign {
+            text-align: left;
+            font-size: 3rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-weight: normal;
+            margin: 0 0 1rem 0;
             text-shadow: 0 0.5rem 0.3rem rgba(0,0,0,0.2);
         }
         .tfny-h2 {
             text-align: center;
             font-size: 1.3rem;
             text-shadow: 0 0.3rem 0.1rem rgba(0,0,0,0.2);
+            margin-block-start: 0;
+            margin-block-end: 0;
         }
         .tfny-h2-red {
             color: #f20c0c;
@@ -143,6 +163,9 @@ function startReactionTest(canvas) {
             box-shadow: 0px 0px 0px 10px rgba(242, 12, 12,0.5);
             cursor: pointer;
             background: #f20c0c;
+            transition: 0.2s ease-in-out;
+        }
+        .tfny-circleRed:hover {
         }
         .tfny-circleGreen {
             max-width: 300px;
@@ -153,6 +176,9 @@ function startReactionTest(canvas) {
             box-shadow: 0px 0px 0px 10px rgba(12, 242, 100, 0.5);
             cursor: pointer;
             background: #0cf264;
+            transition: 0.2s ease-in-out;
+        }
+        .tfny-circleGreen:hover {
         }
         .tfny-icons {
             margin: 0 auto 15px auto;
@@ -182,6 +208,7 @@ function startReactionTest(canvas) {
             color: #fff;
             border-radius: 50%;
             padding: 0 3rem;
+            margin: 1rem 0;
         }
     `
     let styleSheet = document.createElement("style");
@@ -311,21 +338,32 @@ function startReactionTest(canvas) {
             graphWrapper.classList.add("tfny-graphWrapper");
             resultRow.appendChild(graphWrapper);
             // create countdown - if round is last, exit resultsPage and return average data
-            let continueText = document.createElement("span");
-            if (roundNumber < 9) {
-                continueText.classList.add("tfny-count");
-                continueText.appendChild(document.createTextNode('5'));
+            let continueWrapper = document.createElement('div')
+            continueWrapper.classList.add("tfny-continueWrapper")
+            let countdownText = document.createElement("span");
+            if (roundNumber < userPickedRound - 1) {
+                let continueText = document.createElement('h2')
+                continueText.classList.add("tfny-h2");
+                continueText.appendChild(document.createTextNode('Next round in ...'));
+                continueWrapper.appendChild(continueText);
+
+                countdownText.classList.add("tfny-count");
+                countdownText.appendChild(document.createTextNode('3'));
             } else {
-                continueText.classList.add("tfny-h1");
-                continueText.appendChild(document.createTextNode('Calculating results ...'));
+                countdownText.classList.add("tfny-h1-leftAlign");
+                countdownText.appendChild(document.createTextNode('Calculating'));
+                countdownText.appendChild(document.createElement("br"));
+                countdownText.appendChild(document.createTextNode('results ...'));
                 setTimeout(endReactionTest, 3000)
             }
-            resultRow.appendChild(continueText);
+            continueWrapper.appendChild(countdownText);
+            resultRow.appendChild(continueWrapper);
             resultPage.appendChild(resultRow);
             // display round
-            let roundText = document.createElement("h1")
+            let roundText = document.createElement("h2")
             roundText.classList.add("tfny-h2");
             resultPage.appendChild(roundText);
+            
 
         // append content to wrapper
         appWrapper.appendChild(gamePage);
@@ -354,7 +392,7 @@ function startReactionTest(canvas) {
                 gamePage.parentNode.removeChild(gamePage);
                 currentRound();
                 stopTimer();
-                countdown();
+                if (roundNumber < userPickedRound) countdown();
                 displayGraph();
             }
        })
@@ -431,16 +469,15 @@ function startReactionTest(canvas) {
         function stopTimer(){
             timeText.appendChild(document.createTextNode(finalRoundTime + " ms"));
             roundDataArr = [...roundDataArr, {'round': roundNumber, 'data': finalRoundTime}]
-            console.log(roundDataArr)
             clearInterval(interval);
         }
         function updateDisplay(currentTime){
             finalRoundTime = currentTime;
         }
         function countdown() {
-            var timeRemaining = 4;
+            var timeRemaining = 2;
             var timer = setInterval(function(){
-                if(timeRemaining <= 0){
+                if(timeRemaining < 0){
                     clearInterval(timer);
                     document.querySelector(".tfny-count").innerHTML = 0;
                     resultPage.style.display = 'none';
@@ -448,17 +485,17 @@ function startReactionTest(canvas) {
                     gameFunction(canvas);
                 } else {
                     document.querySelector(".tfny-count").innerHTML = timeRemaining;
+                    timeRemaining -= 1;
                 }
-                timeRemaining -= 1;
             }, 1000);
         }
         function currentRound() {
-            if (roundNumber >= 10) {
-                roundNumber = 10;
+            if (roundNumber >= userPickedRound) {
+                roundNumber = userPickedRound;
             } else {
                 roundNumber++;
             }
-            roundText.appendChild(document.createTextNode("Round " + roundNumber + " out of 10"));
+            roundText.appendChild(document.createTextNode("Round " + roundNumber + " out of " + userPickedRound));
         }
         function endReactionTest() {
             // calc avg
@@ -473,10 +510,6 @@ function startReactionTest(canvas) {
             })
             avg = total / newDataArr.length
             console.log('avg', avg)
-
-            // clear data values
-            roundDataArr = 0;
-            roundNumber = 0;
 
             return avg;
         }
@@ -493,7 +526,8 @@ function loadReactionScript(url, callback) {
     head.appendChild(script);
 }
 let callReactionTest = function() {
-    startReactionTest(document.getElementById("tfny-canvas"))
+    let userPickedRound = 10;
+    startReactionTest(document.getElementById("tfny-canvas"), userPickedRound)
 }
 
 loadReactionScript('https://d3js.org/d3.v5.min.js', callReactionTest);
