@@ -58,7 +58,6 @@ function startReactionTest(canvas) {
               opacity: .2;
             }
         }
-          
         .tfny-container {
             position: absolute;
             z-index: 1;
@@ -69,9 +68,9 @@ function startReactionTest(canvas) {
             display: flex;
             justify-content: center;
             align-items: center;
-            background: linear-gradient(-45deg, #2fa0cf, #4b87e0, #5577c2);
+            background: linear-gradient(-45deg, #395799, #467ce0, #41b3e0, #54dece);
             background-size: 400% 400%;
-            animation: tfny-fadein 0.2s linear, bgGradient 15s ease infinite;
+            animation: tfny-fadein 0.2s linear, bgGradient 20s ease infinite;
             color: #fff;
             font-family:"Helvetica Neue",Helvetica,"Lucida Grande","Lucida Sans Unicode",Arial,Verdana,sans-serif;
         }
@@ -92,7 +91,7 @@ function startReactionTest(canvas) {
         .tfny-rowWrapper {
             width: 100%;
             display: flex;
-            justify-content: space-around;
+            justify-content: center;
             align-items: center;
             margin: 1rem 0;
             animation: 0.2s linear tfny-fadein;
@@ -141,9 +140,9 @@ function startReactionTest(canvas) {
             width: 100%;
             height: 100%;
             border-radius: 50%;
-            background: #f20c0c;
-            box-shadow: 0 2rem 1rem rgba(0, 0, 0, 0.3);
+            box-shadow: 0px 0px 0px 10px rgba(242, 12, 12,0.5);
             cursor: pointer;
+            background: #f20c0c;
         }
         .tfny-circleGreen {
             max-width: 300px;
@@ -151,9 +150,9 @@ function startReactionTest(canvas) {
             width: 100%;
             height: 100%;
             border-radius: 50%;
-            background: #0cf264;
-            box-shadow: 0 2rem 1rem rgba(0, 0, 0, 0.3);
+            box-shadow: 0px 0px 0px 10px rgba(12, 242, 100, 0.5);
             cursor: pointer;
+            background: #0cf264;
         }
         .tfny-icons {
             margin: 0 auto 15px auto;
@@ -229,7 +228,6 @@ function startReactionTest(canvas) {
         h2.appendChild(document.createTextNode(", click it as fast as possible. Click anywhere to begin!"));
         startPage.appendChild(h2);
 
-
     // append content to wrapper
     appWrapper.appendChild(startPage);
     
@@ -277,6 +275,14 @@ function startReactionTest(canvas) {
         errorPage.classList.add("tfny-colWrapper");
         errorPage.style.cursor = "pointer";
 
+            // create icon
+            let errorIcon = document.createElement('div')
+            errorIcon.classList.add("tfny-icons");
+            errorIcon.innerHTML+=`<svg viewBox="0 0 20 20">
+				<path fill="#fff" d="M18.344,16.174l-7.98-12.856c-0.172-0.288-0.586-0.288-0.758,0L1.627,16.217c0.339-0.543-0.603,0.668,0.384,0.682h15.991C18.893,16.891,18.167,15.961,18.344,16.174 M2.789,16.008l7.196-11.6l7.224,11.6H2.789z M10.455,7.552v3.561c0,0.244-0.199,0.445-0.443,0.445s-0.443-0.201-0.443-0.445V7.552c0-0.245,0.199-0.445,0.443-0.445S10.455,7.307,10.455,7.552M10.012,12.439c-0.733,0-1.33,0.6-1.33,1.336s0.597,1.336,1.33,1.336c0.734,0,1.33-0.6,1.33-1.336S10.746,12.439,10.012,12.439M10.012,14.221c-0.244,0-0.443-0.199-0.443-0.445c0-0.244,0.199-0.445,0.443-0.445s0.443,0.201,0.443,0.445C10.455,14.021,10.256,14.221,10.012,14.221"></path>
+                <animateTransform attributeType="XML" attributeName="transform" type="scale"       values="1;1.25;1" additive="sum" begin="0s" dur="2s" repeatCount="indefinite"/>
+                </svg>`;
+                errorPage.appendChild(errorIcon)
             // create title
             let h1 = document.createElement("h1");
             h1.classList.add("tfny-h1");
@@ -318,7 +324,7 @@ function startReactionTest(canvas) {
             resultPage.appendChild(resultRow);
             // display round
             let roundText = document.createElement("h1")
-            roundText.classList.add("tfny-roundText");
+            roundText.classList.add("tfny-h2");
             resultPage.appendChild(roundText);
 
         // append content to wrapper
@@ -331,6 +337,7 @@ function startReactionTest(canvas) {
             circle.classList.add("tfny-circleGreen");
             circle.classList.remove("tfny-circleRed");
             startTimer();
+            gameText.innerText = "Click !"
         }
         circleTimer = setTimeout(changeButton, rand);
 
@@ -362,7 +369,7 @@ function startReactionTest(canvas) {
         // functions
         function displayGraph() {
             var margin = {top: 20, right: 20, bottom: 30, left: 50},
-                width = 575 - margin.left - margin.right,
+                width = 450 - margin.left - margin.right,
                 height = 350 - margin.top - margin.bottom;
             
             var x = d3.scaleLinear()
