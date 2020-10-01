@@ -394,7 +394,7 @@ function startReactionTest(canvas, userPickedRound) {
                 currentRound();
                 stopTimer();
                 if (roundNumber < userPickedRound) countdown();
-                displayGraph();
+                if (roundNumber !== 1) displayGraph();
             }
        })
 
@@ -418,7 +418,7 @@ function startReactionTest(canvas, userPickedRound) {
             }
             
             let x = d3.scaleLinear()
-                .domain([0, d3.max(roundDataArr, function(d) { return d.round; })])
+                .domain([1, d3.max(roundDataArr, function(d) { return d.round; })])
                 .range([0, width]);
             
             let y = d3.scaleLinear()
