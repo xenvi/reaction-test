@@ -78,14 +78,13 @@ function startReactionTest(canvas, userPickedRound) {
             animation: 0.2s linear tfny-fadein;
         }
         .tfny-continueWrapper {
-            margin-left: 2rem;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             align-items: center;
         }
         .tfny-graphWrapper {
-            margin-right: 2rem;
+            margin-right: 4rem;
             display: flex;
             justify-content: center;
         }
@@ -196,7 +195,6 @@ function startReactionTest(canvas, userPickedRound) {
         }
         @media only screen and (max-width: 790px) {
             .tfny-continueWrapper {
-                margin-left: 0;
                 margin-top: 0.5rem;
             }
             .tfny-graphWrapper {
