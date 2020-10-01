@@ -496,9 +496,9 @@ function startReactionTest(canvas, userPickedRound) {
                 if(timeRemaining < 0){
                     clearInterval(timer);
                     document.querySelector(".tfny-count").innerHTML = 0;
-                    // resultPage.style.display = 'none';
-                    // resultPage.parentNode.removeChild(resultPage);
-                    // gameFunction(canvas);
+                    resultPage.style.display = 'none';
+                    resultPage.parentNode.removeChild(resultPage);
+                    gameFunction(canvas);
                 } else {
                     document.querySelector(".tfny-count").innerHTML = timeRemaining;
                     timeRemaining -= 1;
