@@ -31,22 +31,6 @@ function startReactionTest(canvas, userPickedRound) {
                 background-position: 0% 50%;
             }
         }
-        @keyframes pulse {
-            0% {
-                transform: scale(0.95);
-                box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.7);
-            }
-            
-            70% {
-                transform: scale(1);
-                box-shadow: 0 0 0 10px rgba(255, 255, 255, 0);
-            }
-            
-            100% {
-                transform: scale(0.95);
-                box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
-            }
-        }
         @keyframes blink {
             0% {
               opacity: .2;
@@ -63,8 +47,8 @@ function startReactionTest(canvas, userPickedRound) {
             z-index: 1;
             top: 0;
             left: 0;
-            width: 100vw;
-            height: 100vh;
+            width: 100%;
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -75,12 +59,8 @@ function startReactionTest(canvas, userPickedRound) {
             font-family:"Helvetica Neue",Helvetica,"Lucida Grande","Lucida Sans Unicode",Arial,Verdana,sans-serif;
         }
         .tfny-colWrapper {
-            position: absolute;
-            z-index: 2;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
+            width: 100%;
+            min-height: 100vh;
             padding: 1rem;
             display: flex;
             flex-direction: column;
@@ -93,17 +73,21 @@ function startReactionTest(canvas, userPickedRound) {
             display: flex;
             justify-content: center;
             align-items: center;
+            flex-wrap: wrap;
             margin: 1rem 0;
             animation: 0.2s linear tfny-fadein;
         }
         .tfny-continueWrapper {
+            margin-left: 2rem;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            margin-left: 2rem;
+            align-items: center;
         }
         .tfny-graphWrapper {
             margin-right: 2rem;
+            display: flex;
+            justify-content: center;
         }
         .tfny-h1 {
             text-align: center;
@@ -158,27 +142,23 @@ function startReactionTest(canvas, userPickedRound) {
             max-width: 300px;
             max-height: 300px;
             width: 100%;
-            height: 100%;
+            height: 300px;
             border-radius: 50%;
             box-shadow: 0px 0px 0px 10px rgba(242, 12, 12,0.5);
             cursor: pointer;
             background: #f20c0c;
             transition: 0.2s ease-in-out;
         }
-        .tfny-circleRed:hover {
-        }
         .tfny-circleGreen {
             max-width: 300px;
             max-height: 300px;
             width: 100%;
-            height: 100%;
+            height: 300px;
             border-radius: 50%;
             box-shadow: 0px 0px 0px 10px rgba(12, 242, 100, 0.5);
             cursor: pointer;
             background: #0cf264;
             transition: 0.2s ease-in-out;
-        }
-        .tfny-circleGreen:hover {
         }
         .tfny-icons {
             margin: 0 auto 15px auto;
@@ -187,12 +167,11 @@ function startReactionTest(canvas, userPickedRound) {
         }
         .tfny-icons svg path {
             box-shadow: 0 0 0 0 rgba(255, 255, 255, 1);
-            //animation: pulse 2s ease infinite;
         }
         .tfny-axis path, .tfny-axis line {
             fill: none;
             stroke: #fff;
-            stroke-width: 2px;
+            stroke-width: 3px;
         }
         .tfny-graphArea {
             fill: rgba(255,255,255,0.4);
@@ -200,15 +179,38 @@ function startReactionTest(canvas, userPickedRound) {
         .tfny-graphLine {
             fill: none;
             stroke: #fff;
-            stroke-width: 4px;
+            stroke-width: 3px;
+        }
+        .tfny-dot {
+            fill: #fff;
+            stroke: none;
         }
         .tfny-count {
-            font-size: 10rem;
+            text-align: center;
+            font-size: 180px;
             border: 1rem solid #fff;
             color: #fff;
             border-radius: 50%;
-            padding: 0 3rem;
-            margin: 1rem 0;
+            width: 245px;
+            margin: 1.5rem 0 0.5rem 0;
+        }
+        @media only screen and (max-width: 790px) {
+            .tfny-continueWrapper {
+                margin-left: 0;
+                margin-top: 0.5rem;
+            }
+            .tfny-graphWrapper {
+                margin-right: 0;
+            }
+            .tfny-count {
+                text-align: center;
+                font-size: 150px;
+                border: 1rem solid #fff;
+                color: #fff;
+                border-radius: 50%;
+                width: 200px;
+                margin: 1.5rem 0 0.5rem 0;
+            }
         }
     `
     let styleSheet = document.createElement("style");
@@ -266,7 +268,7 @@ function startReactionTest(canvas, userPickedRound) {
 
     // set variables
     let roundNumber = 0;
-    let roundDataArr = [{'round': 0, 'data': 0}];
+    let roundDataArr = [];
 
     function gameFunction(canvas) {
         // set variables
@@ -363,14 +365,13 @@ function startReactionTest(canvas, userPickedRound) {
             let roundText = document.createElement("h2")
             roundText.classList.add("tfny-h2");
             resultPage.appendChild(roundText);
-            
 
         // append content to wrapper
         appWrapper.appendChild(gamePage);
         gamePage.style.display = 'flex';
         
         // create button red to green timer
-        var rand = Math.floor(Math.random() * 2000) + 2000
+        let rand = Math.floor(Math.random() * 2000) + 2000
         function changeButton() {
             circle.classList.add("tfny-circleGreen");
             circle.classList.remove("tfny-circleRed");
@@ -406,34 +407,40 @@ function startReactionTest(canvas, userPickedRound) {
 
         // functions
         function displayGraph() {
-            var margin = {top: 20, right: 20, bottom: 30, left: 50},
-                width = 450 - margin.left - margin.right,
-                height = 350 - margin.top - margin.bottom;
+            if(window.innerWidth < 550) {
+                var margin = {top: 10, right: 10, bottom: 15, left: 25},
+                    width = 275 - margin.left - margin.right,
+                    height = 200 - margin.top - margin.bottom;
+            } else {
+                var margin = {top: 20, right: 20, bottom: 30, left: 50},
+                    width = 450 - margin.left - margin.right,
+                    height = 350 - margin.top - margin.bottom;
+            }
             
-            var x = d3.scaleLinear()
+            let x = d3.scaleLinear()
                 .domain([0, d3.max(roundDataArr, function(d) { return d.round; })])
                 .range([0, width]);
             
-            var y = d3.scaleLinear()
+            let y = d3.scaleLinear()
                 .domain([0, d3.max(roundDataArr, function(d) { return d.data; })])
                 .range([height, 0]);
             
-            var xAxis = d3.axisBottom()
+            let xAxis = d3.axisBottom()
                 .scale(x).tickSize(0).tickValues([]);
             
-            var yAxis = d3.axisLeft()
+            let yAxis = d3.axisLeft()
                 .scale(y).tickSize(0).tickValues([]);
             
-            var area = d3.area()
+            let area = d3.area()
                 .x(function(d) { return x(d.round); })
                 .y0(height)
                 .y1(function(d) { return y(d.data); });
             
-            var valueline = d3.line()
+            let valueline = d3.line()
                 .x(function(d) { return x(d.round); })
                 .y(function(d) { return y(d.data); });
             
-            var svg = d3.select(".tfny-graphWrapper")
+            let svg = d3.select(".tfny-graphWrapper")
                 .append("svg")
                 .attr("width", width + margin.left + margin.right)
                 .attr("height", height + margin.top + margin.bottom)
@@ -449,6 +456,15 @@ function startReactionTest(canvas, userPickedRound) {
                 .datum(roundDataArr)
                 .attr("class", "tfny-graphLine")
                 .attr("d", valueline);
+
+            svg.selectAll(".tfny-dot")
+                .data(roundDataArr)
+                .enter()
+                .append("circle")
+                .attr("class", "tfny-dot")
+                .attr("cx", function(d) { return x(d.round) })
+                .attr("cy", function(d) { return y(d.data) })
+                .attr("r", 7)
             
             svg.append("g")
                 .attr("class", "tfny-x tfny-axis")
@@ -475,14 +491,14 @@ function startReactionTest(canvas, userPickedRound) {
             finalRoundTime = currentTime;
         }
         function countdown() {
-            var timeRemaining = 2;
-            var timer = setInterval(function(){
+            let timeRemaining = 2;
+            let timer = setInterval(function(){
                 if(timeRemaining < 0){
                     clearInterval(timer);
                     document.querySelector(".tfny-count").innerHTML = 0;
-                    resultPage.style.display = 'none';
-                    resultPage.parentNode.removeChild(resultPage);
-                    gameFunction(canvas);
+                    // resultPage.style.display = 'none';
+                    // resultPage.parentNode.removeChild(resultPage);
+                    // gameFunction(canvas);
                 } else {
                     document.querySelector(".tfny-count").innerHTML = timeRemaining;
                     timeRemaining -= 1;
@@ -517,8 +533,8 @@ function startReactionTest(canvas, userPickedRound) {
 }
 
 function loadReactionScript(url, callback) {
-    var head = document.head;
-    var script = document.createElement('script');
+    let head = document.head;
+    let script = document.createElement('script');
     script.type = 'text/javascript';
     script.src = url;
     script.onreadystatechange = callback;
