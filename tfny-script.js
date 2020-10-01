@@ -259,7 +259,7 @@ function startReactionTest(canvas, userPickedRound) {
     appWrapper.appendChild(startPage);
     
     // on click of start page, start game
-    startPage.addEventListener('click', () => {
+    startPage.addEventListener('mousedown', () => {
         startPage.parentNode.removeChild(startPage);
         gameFunction(canvas);
     })
@@ -381,7 +381,7 @@ function startReactionTest(canvas, userPickedRound) {
         circleTimer = setTimeout(changeButton, rand);
 
        // handle circle click
-       circle.addEventListener('click', () => {
+       circle.addEventListener('mousedown', () => {
            if (circle.classList.contains('tfny-circleRed')) {
                 appWrapper.appendChild(errorPage);
                 errorPage.style.display = 'flex';
@@ -399,7 +399,7 @@ function startReactionTest(canvas, userPickedRound) {
        })
 
        // on error page click, restart game
-       errorPage.addEventListener('click', () => {
+       errorPage.addEventListener('mousedown', () => {
             errorPage.style.display = 'none';
             errorPage.parentNode.removeChild(errorPage);
             gameFunction(canvas);
@@ -493,9 +493,9 @@ function startReactionTest(canvas, userPickedRound) {
         function countdown() {
             let timeRemaining = 2;
             let timer = setInterval(function(){
-                if(timeRemaining < 0){
+                if(timeRemaining < 1){
                     clearInterval(timer);
-                    document.querySelector(".tfny-count").innerHTML = 0;
+                    document.querySelector(".tfny-count").innerHTML = 1;
                     resultPage.style.display = 'none';
                     resultPage.parentNode.removeChild(resultPage);
                     gameFunction(canvas);
