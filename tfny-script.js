@@ -334,9 +334,11 @@ function startReactionTest(canvas, userPickedRound) {
             let resultRow = document.createElement('section');
             resultRow.classList.add("tfny-rowWrapper");
             // display graph
-            let graphWrapper = document.createElement("div")
-            graphWrapper.classList.add("tfny-graphWrapper");
-            resultRow.appendChild(graphWrapper);
+            if (roundNumber !== 0) {
+                let graphWrapper = document.createElement("div")
+                graphWrapper.classList.add("tfny-graphWrapper");
+                resultRow.appendChild(graphWrapper);
+            }
             // create countdown - if round is last, exit resultsPage and return average data
             let continueWrapper = document.createElement('div')
             continueWrapper.classList.add("tfny-continueWrapper")
