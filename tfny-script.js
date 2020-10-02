@@ -139,7 +139,6 @@ function startReactionTest(canvas, userPickedRound) {
         }
         .tfny-circleRed {
             max-width: 300px;
-            max-height: 300px;
             width: 100%;
             height: 300px;
             border-radius: 50%;
@@ -150,7 +149,6 @@ function startReactionTest(canvas, userPickedRound) {
         }
         .tfny-circleGreen {
             max-width: 300px;
-            max-height: 300px;
             width: 100%;
             height: 300px;
             border-radius: 50%;
@@ -193,7 +191,7 @@ function startReactionTest(canvas, userPickedRound) {
             width: 245px;
             margin: 1.5rem 0 0.5rem 0;
         }
-        @media only screen and (max-width: 790px) {
+        @media screen and (max-width: 790px) {
             .tfny-continueWrapper {
                 margin-top: 0.5rem;
             }
@@ -202,12 +200,21 @@ function startReactionTest(canvas, userPickedRound) {
             }
             .tfny-count {
                 text-align: center;
-                font-size: 150px;
-                border: 1rem solid #fff;
+                font-size: 100px;
+                border: 0.8rem solid #fff;
                 color: #fff;
                 border-radius: 50%;
-                width: 200px;
+                width: 150px;
                 margin: 1.5rem 0 0.5rem 0;
+            }
+            .tfny-h1-leftAlign {
+                font-size: 2rem;
+            }
+        }
+        @media screen and (max-width: 350px) {
+            .tfny-circleRed, .tfny-circleGreen {
+                max-width: 250px;
+                height: 250px;
             }
         }
     `
@@ -407,7 +414,11 @@ function startReactionTest(canvas, userPickedRound) {
 
         // functions
         function displayGraph() {
-            if(window.innerWidth < 550) {
+            if(window.innerWidth < 400) {
+                var margin = {top: 10, right: 10, bottom: 15, left: 25},
+                    width = 250 - margin.left - margin.right,
+                    height = 125 - margin.top - margin.bottom;
+            } else if (window.innerWidth < 790) {
                 var margin = {top: 10, right: 10, bottom: 15, left: 25},
                     width = 275 - margin.left - margin.right,
                     height = 200 - margin.top - margin.bottom;
@@ -457,14 +468,25 @@ function startReactionTest(canvas, userPickedRound) {
                 .attr("class", "tfny-graphLine")
                 .attr("d", valueline);
 
-            svg.selectAll(".tfny-dot")
-                .data(roundDataArr)
-                .enter()
-                .append("circle")
-                .attr("class", "tfny-dot")
-                .attr("cx", function(d) { return x(d.round) })
-                .attr("cy", function(d) { return y(d.data) })
-                .attr("r", 7)
+            if (window.innerWidth < 790) {
+                svg.selectAll(".tfny-dot")
+                    .data(roundDataArr)
+                    .enter()
+                    .append("circle")
+                    .attr("class", "tfny-dot")
+                    .attr("cx", function(d) { return x(d.round) })
+                    .attr("cy", function(d) { return y(d.data) })
+                    .attr("r", 5)
+            } else {
+                svg.selectAll(".tfny-dot")
+                    .data(roundDataArr)
+                    .enter()
+                    .append("circle")
+                    .attr("class", "tfny-dot")
+                    .attr("cx", function(d) { return x(d.round) })
+                    .attr("cy", function(d) { return y(d.data) })
+                    .attr("r", 7)
+             }
             
             svg.append("g")
                 .attr("class", "tfny-x tfny-axis")
