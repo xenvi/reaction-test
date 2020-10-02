@@ -397,7 +397,7 @@ function startReactionTest(canvas, userPickedRound) {
             startTimer();
             gameText.innerText = "Click !"
         }
-        circleTimer = setTimeout(changeButton, rand);
+        let circleTimer = setTimeout(changeButton, rand);
 
        // handle circle click
        circle.addEventListener('touchstart', (e) => {
