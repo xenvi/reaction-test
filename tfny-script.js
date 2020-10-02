@@ -114,7 +114,7 @@ function startReactionTest(canvas, userPickedRound) {
             margin-block-end: 0;
         }
         .tfny-h2-red {
-            color: #f20c0c;
+            color: #e63737;
         }
         .tfny-h2-green {
             color: #0cf264;
@@ -144,7 +144,7 @@ function startReactionTest(canvas, userPickedRound) {
             border-radius: 50%;
             box-shadow: 0px 0px 0px 10px rgba(242, 12, 12,0.5);
             cursor: pointer;
-            background: #f20c0c;
+            background: #e63737;
             transition: 0.2s ease-in-out;
         }
         .tfny-circleGreen {
@@ -266,7 +266,7 @@ function startReactionTest(canvas, userPickedRound) {
     appWrapper.appendChild(startPage);
     
     // on click of start page, start game
-    startPage.addEventListener('mousedown', () => {
+    startPage.addEventListener('touchstart', () => {
         startPage.parentNode.removeChild(startPage);
         gameFunction(canvas);
     })
@@ -388,7 +388,7 @@ function startReactionTest(canvas, userPickedRound) {
         circleTimer = setTimeout(changeButton, rand);
 
        // handle circle click
-       circle.addEventListener('mousedown', () => {
+       circle.addEventListener('touchstart', () => {
            if (circle.classList.contains('tfny-circleRed')) {
                 appWrapper.appendChild(errorPage);
                 errorPage.style.display = 'flex';
@@ -406,7 +406,7 @@ function startReactionTest(canvas, userPickedRound) {
        })
 
        // on error page click, restart game
-       errorPage.addEventListener('mousedown', () => {
+       errorPage.addEventListener('touchstart', () => {
             errorPage.style.display = 'none';
             errorPage.parentNode.removeChild(errorPage);
             gameFunction(canvas);
