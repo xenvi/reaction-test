@@ -52,7 +52,7 @@ function startReactionTest(canvas, userPickedRound) {
             display: flex;
             justify-content: center;
             align-items: center;
-            background: linear-gradient(-45deg, #395799, #467ce0, #41b3e0, #54dece);
+            background: linear-gradient(-45deg, #2e4b6e, #3c597a, #395799);
             background-size: 400% 400%;
             animation: tfny-fadein 0.2s linear, bgGradient 20s ease infinite;
             color: #fff;
@@ -109,7 +109,7 @@ function startReactionTest(canvas, userPickedRound) {
         .tfny-h2 {
             text-align: center;
             font-size: 1.3rem;
-            text-shadow: 0 0.3rem 0.1rem rgba(0,0,0,0.2);
+            text-shadow: 0 0.2rem 0.1rem rgba(0,0,0,0.2);
             margin-block-start: 0;
             margin-block-end: 0;
         }
