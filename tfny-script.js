@@ -276,6 +276,10 @@ function startReactionTest(canvas, userPickedRound) {
         startPage.parentNode.removeChild(startPage);
         gameFunction(canvas);
     })
+    startPage.addEventListener('mousedown', () => {
+        startPage.parentNode.removeChild(startPage);
+        gameFunction(canvas);
+    })
 
     // set variables
     let roundNumber = 0;
@@ -410,9 +414,30 @@ function startReactionTest(canvas, userPickedRound) {
                 if (roundNumber !== 1) displayGraph();
             }
        })
+       circle.addEventListener('mousedown', () => {
+        if (circle.classList.contains('tfny-circleRed')) {
+             appWrapper.appendChild(errorPage);
+             errorPage.style.display = 'flex';
+             gamePage.parentNode.removeChild(gamePage);
+             clearTimeout(circleTimer)
+        } else if (circle.classList.contains('tfny-circleGreen')) {
+             appWrapper.appendChild(resultPage);
+             resultPage.style.display = 'flex';
+             gamePage.parentNode.removeChild(gamePage);
+             currentRound();
+             stopTimer();
+             if (roundNumber < userPickedRound) countdown();
+             if (roundNumber !== 1) displayGraph();
+         }
+    })
 
        // on error page click, restart game
        errorPage.addEventListener('touchstart', () => {
+            errorPage.style.display = 'none';
+            errorPage.parentNode.removeChild(errorPage);
+            gameFunction(canvas);
+        })
+        errorPage.addEventListener('mousedown', () => {
             errorPage.style.display = 'none';
             errorPage.parentNode.removeChild(errorPage);
             gameFunction(canvas);
