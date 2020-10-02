@@ -127,7 +127,7 @@ function startReactionTest(canvas, userPickedRound) {
             text-align: center;
             text-transform: uppercase;
             letter-spacing: 3px;
-            text-shadow: 0 0.3rem 0.1rem rgba(0,0,0,0.2);
+            text-shadow: 0 0.2rem 0.1rem rgba(0,0,0,0.2);
         }
         .tfny-gameText span {
             font-family: georgia;
@@ -192,13 +192,14 @@ function startReactionTest(canvas, userPickedRound) {
             border-radius: 50%;
             width: 245px;
             margin: 1.5rem 0 0.5rem 0;
+            text-shadow: 0 0.5rem 0.3rem rgba(0,0,0,0.2);
         }
         @media screen and (max-width: 790px) {
             .tfny-continueWrapper {
                 margin-top: 0.5rem;
             }
             .tfny-graphWrapper {
-                margin-right: 0;
+                margin-right: 2rem;
             }
             .tfny-count {
                 text-align: center;
@@ -213,10 +214,13 @@ function startReactionTest(canvas, userPickedRound) {
                 font-size: 2rem;
             }
         }
-        @media screen and (max-width: 350px) {
+        @media screen and (max-width: 400px) {
             .tfny-circleRed, .tfny-circleGreen {
                 max-width: 250px;
                 height: 250px;
+            }
+            .tfny-graphWrapper {
+                margin-right: 0;
             }
         }
     `
@@ -417,7 +421,7 @@ function startReactionTest(canvas, userPickedRound) {
         // functions
         function displayGraph() {
             if(window.innerWidth < 400) {
-                var margin = {top: 10, right: 10, bottom: 15, left: 25},
+                var margin = {top: 10, right: 10, bottom: 15, left: 15},
                     width = 250 - margin.left - margin.right,
                     height = 125 - margin.top - margin.bottom;
             } else if (window.innerWidth < 790) {
