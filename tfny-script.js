@@ -272,13 +272,15 @@ function startReactionTest(canvas, userPickedRound) {
     appWrapper.appendChild(startPage);
     
     // on click of start page, start game
-    startPage.addEventListener('touchstart', () => {
+    startPage.addEventListener('touchstart', (e) => {
         startPage.parentNode.removeChild(startPage);
         gameFunction(canvas);
+        e.preventDefault();
     })
-    startPage.addEventListener('mousedown', () => {
+    startPage.addEventListener('mousedown', (e) => {
         startPage.parentNode.removeChild(startPage);
         gameFunction(canvas);
+        e.preventDefault();
     })
 
     // set variables
@@ -398,7 +400,7 @@ function startReactionTest(canvas, userPickedRound) {
         circleTimer = setTimeout(changeButton, rand);
 
        // handle circle click
-       circle.addEventListener('touchstart', () => {
+       circle.addEventListener('touchstart', (e) => {
            if (circle.classList.contains('tfny-circleRed')) {
                 appWrapper.appendChild(errorPage);
                 errorPage.style.display = 'flex';
@@ -413,8 +415,9 @@ function startReactionTest(canvas, userPickedRound) {
                 if (roundNumber < userPickedRound) countdown();
                 if (roundNumber !== 1) displayGraph();
             }
+        e.preventDefault();
        })
-       circle.addEventListener('mousedown', () => {
+       circle.addEventListener('mousedown', (e) => {
         if (circle.classList.contains('tfny-circleRed')) {
              appWrapper.appendChild(errorPage);
              errorPage.style.display = 'flex';
@@ -429,18 +432,21 @@ function startReactionTest(canvas, userPickedRound) {
              if (roundNumber < userPickedRound) countdown();
              if (roundNumber !== 1) displayGraph();
          }
+         e.preventDefault();
     })
 
        // on error page click, restart game
-       errorPage.addEventListener('touchstart', () => {
+       errorPage.addEventListener('touchstart', (e) => {
             errorPage.style.display = 'none';
             errorPage.parentNode.removeChild(errorPage);
             gameFunction(canvas);
+            e.preventDefault();
         })
-        errorPage.addEventListener('mousedown', () => {
+        errorPage.addEventListener('mousedown', (e) => {
             errorPage.style.display = 'none';
             errorPage.parentNode.removeChild(errorPage);
             gameFunction(canvas);
+            e.preventDefault();
         })
 
         // functions
