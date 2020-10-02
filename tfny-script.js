@@ -48,8 +48,9 @@ function startReactionTest(canvas, userPickedRound) {
             top: 0;
             left: 0;
             width: 100%;
-            min-height: 100%;
+            height: 100%;
             display: flex;
+            flex-grow: 1;
             justify-content: center;
             align-items: center;
             background: linear-gradient(-45deg, #2e4b6e, #395799, #3c597a);
@@ -60,10 +61,11 @@ function startReactionTest(canvas, userPickedRound) {
         }
         .tfny-colWrapper {
             width: 100%;
-            min-height: 100%;
+            height: 100%;
             padding: 1rem;
             display: flex;
             flex-direction: column;
+            flex-grow: 1;
             justify-content: center;
             align-items: center;
             animation: 0.2s linear tfny-fadein;
