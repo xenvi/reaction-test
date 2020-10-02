@@ -48,11 +48,11 @@ function startReactionTest(canvas, userPickedRound) {
             top: 0;
             left: 0;
             width: 100%;
-            min-height: 100vh;
+            min-height: 100%;
             display: flex;
             justify-content: center;
             align-items: center;
-            background: linear-gradient(-45deg, #2e4b6e, #3c597a, #395799);
+            background: linear-gradient(-45deg, #2e4b6e, #395799, #3c597a);
             background-size: 400% 400%;
             animation: tfny-fadein 0.2s linear, bgGradient 20s ease infinite;
             color: #fff;
@@ -60,7 +60,7 @@ function startReactionTest(canvas, userPickedRound) {
         }
         .tfny-colWrapper {
             width: 100%;
-            min-height: 100vh;
+            min-height: 100%;
             padding: 1rem;
             display: flex;
             flex-direction: column;
