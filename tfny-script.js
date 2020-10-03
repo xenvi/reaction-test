@@ -375,7 +375,6 @@ function startReactionTest(canvas, userPickedRound) {
                 countdownText.appendChild(document.createTextNode('Calculating'));
                 countdownText.appendChild(document.createElement("br"));
                 countdownText.appendChild(document.createTextNode('results ...'));
-                setTimeout(endReactionTest, 3000)
             }
             continueWrapper.appendChild(countdownText);
             resultRow.appendChild(continueWrapper);
@@ -414,7 +413,8 @@ function startReactionTest(canvas, userPickedRound) {
                 stopTimer();
                 if (roundNumber < userPickedRound) countdown();
                 if (roundNumber !== 1) displayGraph();
-            }
+                if (roundNumber === userPickedRound) setTimeout(endReactionTest, 3000);
+             }
         e.preventDefault();
        })
        circle.addEventListener('mousedown', (e) => {
@@ -584,7 +584,8 @@ function startReactionTest(canvas, userPickedRound) {
                 total += item
             })
             avg = total / newDataArr.length
-            console.log('avg', avg)
+            console.log('avg !!', avg)
+            alert("end" + newDataArr)
 
             return avg;
         }
