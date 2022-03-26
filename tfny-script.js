@@ -121,6 +121,25 @@ function startReactionTest(canvas, userPickedRound) {
         .tfny-h2-green {
             color: #0cf264;
         }
+        .tfny-link {
+            position: absolute;
+            bottom: 0;
+            color: #fff;
+            text-align: center;
+            font-size: 1.3rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: normal;
+            margin: 0 0 1rem 0;
+            text-shadow: 0 0.5rem 0.3rem rgba(0,0,0,0.2);
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: .3s;
+        }
+        .tfny-link:hover {
+            border-bottom: 1px solid #fff;
+            transition: .3s;
+        }
         .tfny-gameText {
             color: #fff;
             font-size: 2rem;
@@ -267,20 +286,30 @@ function startReactionTest(canvas, userPickedRound) {
         h2.appendChild(green);
         h2.appendChild(document.createTextNode(", click it as fast as possible. Click anywhere to begin!"));
         startPage.appendChild(h2);
+        // create link 
+        let link = document.createElement("a");
+        link.classList.add("tfny-link");
+        link.appendChild(document.createTextNode("Click to take the official test on www.arealme.com"));
+        link.href = 'https://www.arealme.com/reaction-test/en/'
+        startPage.appendChild(link);
 
     // append content to wrapper
     appWrapper.appendChild(startPage);
     
     // on click of start page, start game
     startPage.addEventListener('touchstart', (e) => {
-        startPage.parentNode.removeChild(startPage);
-        gameFunction(canvas);
-        e.preventDefault();
+        if (e.target !== link) {
+            startPage.parentNode.removeChild(startPage);
+            gameFunction(canvas);
+            e.preventDefault();
+        }
     })
     startPage.addEventListener('mousedown', (e) => {
-        startPage.parentNode.removeChild(startPage);
-        gameFunction(canvas);
-        e.preventDefault();
+        if (e.target !== link) {
+            startPage.parentNode.removeChild(startPage);
+            gameFunction(canvas);
+            e.preventDefault();
+        }
     })
 
     // set variables
